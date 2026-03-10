@@ -1,91 +1,103 @@
-import React, { useState } from 'react';
+import React, { useState, memo } from 'react';
 import {
   View,
   Text,
   TextInput,
   StyleSheet,
   TouchableOpacity,
+  TextInputProps,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { COLORS, SPACING, BORDER_RADIUS, FONT_SIZE, FONT_WEIGHT } from '../utils/theme';
 
-interface InputFieldProps {
+interface InputFieldProps extends TextInputProps {
   label: string;
-  value: string;
-  onChangeText: (text: string) => void;
-  placeholder?: string;
   error?: string;
-  secureTextEntry?: boolean;
+  isPassword?: boolean;
 }
 
-const InputField: React.FC<InputFieldProps> = ({
+const InputField: React.FC<InputFieldProps> = memo(({
   label,
-  value,
-  onChangeText,
-  placeholder,
   error,
-  secureTextEntry = false,
+  isPassword = false,
+  style,
+  ...rest
 }) => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   const togglePasswordVisibility = () => {
-    setIsPasswordVisible(!isPasswordVisible);
+    setIsPasswordVisible((v) => !v);
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.label}>{label}</Text>
-      <View style={styles.inputContainer}>
+      <View
+        style={[
+          styles.inputContainer,
+          { borderColor: error ? COLORS.error : COLORS.inputBorder },
+        ]}
+      >
         <TextInput
-          style={styles.input}
-          value={value}
-          onChangeText={onChangeText}
-          placeholder={placeholder}
-          secureTextEntry={secureTextEntry && !isPasswordVisible}
+          style={[styles.input, style]}
+          placeholderTextColor={COLORS.textPlaceholder}
+          secureTextEntry={isPassword && !isPasswordVisible}
           autoCapitalize="none"
+          accessibilityLabel={label}
+          accessibilityHint={error ? `Error: ${error}` : undefined}
+          {...rest}
         />
-        {secureTextEntry && (
-          <TouchableOpacity onPress={togglePasswordVisibility} style={styles.icon}>
+        {isPassword && (
+          <TouchableOpacity
+            onPress={togglePasswordVisibility}
+            style={styles.icon}
+            accessibilityLabel={isPasswordVisible ? 'Hide password' : 'Show password'}
+            accessibilityRole="button"
+          >
             <Ionicons
-              name={isPasswordVisible ? 'eye-off' : 'eye'}
-              size={24}
-              color="gray"
+              name={isPasswordVisible ? 'eye' : 'eye-off'}
+              size={20}
+              color={COLORS.textSecondary}
             />
           </TouchableOpacity>
         )}
       </View>
-      {error && <Text style={styles.error}>{error}</Text>}
+      {error && <Text style={styles.error} accessibilityRole="alert">{error}</Text>}
     </View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   container: {
     marginBottom: 16,
   },
   label: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 8,
+    fontSize: 12,
+    color: COLORS.label,
+    marginBottom: 4,
+    letterSpacing: 1,
+    textTransform: 'uppercase',
   },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#ccc',
     borderRadius: 8,
     paddingHorizontal: 12,
+    backgroundColor: COLORS.inputBackground,
   },
   input: {
     flex: 1,
     height: 48,
     fontSize: 16,
+    color: COLORS.text,
   },
   icon: {
     padding: 4,
   },
   error: {
-    color: 'red',
-    fontSize: 14,
+    color: COLORS.error,
+    fontSize: 12,
     marginTop: 4,
   },
 });

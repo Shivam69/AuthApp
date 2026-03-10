@@ -1,9 +1,16 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { User } from '../types/user';
 
 interface AuthContextType {
   user: User | null;
+  isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
   signup: (name: string, email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
@@ -17,44 +24,65 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    const loadUser = async () => {
+    const restoreSession = async () => {
       try {
-        const storedUser = await AsyncStorage.getItem('user');
-        if (storedUser) {
-          setUser(JSON.parse(storedUser));
+        const raw = await AsyncStorage.getItem('@auth_current_user');
+        if (raw) {
+          setUser(JSON.parse(raw));
         }
-      } catch (error) {
-        console.error('Failed to load user from storage', error);
+      } catch (e) {
+        console.error('restoreSession error', e);
+      } finally {
+        setIsLoading(false);
       }
     };
-    loadUser();
+    restoreSession();
   }, []);
 
   const login = async (email: string, password: string) => {
-    // Simulate API call
-    // In real app, call your backend
-    // For demo, accept any email/password
-    const mockUser: User = { name: 'Demo User', email };
-    setUser(mockUser);
-    await AsyncStorage.setItem('user', JSON.stringify(mockUser));
+    // look up registered users
+    const usersRaw = await AsyncStorage.getItem('@auth_users');
+    const users: User[] = usersRaw ? JSON.parse(usersRaw) : [];
+
+    const found = users.find(
+      (u) => u.email.toLowerCase() === email.toLowerCase()
+    );
+    if (!found || found.password !== password) {
+      throw new Error('Invalid email or password.');
+    }
+    setUser(found);
+    await AsyncStorage.setItem('@auth_current_user', JSON.stringify(found));
   };
 
   const signup = async (name: string, email: string, password: string) => {
-    // Simulate API call
-    const newUser: User = { name, email };
+    const usersRaw = await AsyncStorage.getItem('@auth_users');
+    const users: User[] = usersRaw ? JSON.parse(usersRaw) : [];
+
+    const exists = users.some(
+      (u) => u.email.toLowerCase() === email.toLowerCase()
+    );
+    if (exists) {
+      throw new Error('Email already registered.');
+    }
+    const newUser: User = { name, email, password };
+    const updated = [...users, newUser];
+    await AsyncStorage.setItem('@auth_users', JSON.stringify(updated));
     setUser(newUser);
-    await AsyncStorage.setItem('user', JSON.stringify(newUser));
+    await AsyncStorage.setItem('@auth_current_user', JSON.stringify(newUser));
   };
 
   const logout = async () => {
     setUser(null);
-    await AsyncStorage.removeItem('user');
+    await AsyncStorage.removeItem('@auth_current_user');
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, signup, logout }}>
+    <AuthContext.Provider
+      value={{ user, isLoading, login, signup, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );
