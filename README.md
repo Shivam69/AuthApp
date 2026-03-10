@@ -49,19 +49,19 @@ A simple **React Native authentication app** built with **Expo and TypeScript**.
 
 | Android | iOS |
 |---------|-----|
-| <img src="screenshots/android1.png" width="300"> | <img src="screenshots/ios1.png" width="300"> |
+| <img src="screenshots/android1.png" width="250"> | <img src="screenshots/ios1.png" width="250"> |
 
 ### Signup Screen
 
 | Android | iOS |
 |---------|-----|
-| <img src="screenshots/android2.png" width="300"> | <img src="screenshots/ios2.png" width="300"> |
+| <img src="screenshots/android2.png" width="250"> | <img src="screenshots/ios2.png" width="250"> |
 
 ### Home Screen
 
 | Android | iOS |
 |---------|-----|
-| <img src="screenshots/android3.png" width="300"> | <img src="screenshots/ios3.png" width="300"> |
+| <img src="screenshots/android3.png" width="250"> | <img src="screenshots/ios3.png" width="250"> |
 
 ## Setup Instructions
 
