@@ -69,11 +69,13 @@ A simple **React Native authentication app** built with **Expo and TypeScript**.
 
 ```
     npm install
+```
 
 2.  Start the project
 
 ```
     npm start
+```
 
 3.  Run the app
 
