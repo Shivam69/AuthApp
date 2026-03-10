@@ -45,47 +45,33 @@ A simple **React Native authentication app** built with **Expo and TypeScript**.
 
 ## Screenshots
 
-### Android
+### Login Screen
 
-#### Login Screen
+| Android | iOS |
+|---------|-----|
+| <img src="screenshots/android1.png" width="300"> | <img src="screenshots/ios1.png" width="300"> |
 
-![Android Login](screenshots/android1.png)
+### Signup Screen
 
-#### Signup Screen
+| Android | iOS |
+|---------|-----|
+| <img src="screenshots/android2.png" width="300"> | <img src="screenshots/ios2.png" width="300"> |
 
-![Android Signup](screenshots/android2.png)
+### Home Screen
 
-#### Home Screen
-
-![Android Home](screenshots/android3.png)
-
-### iOS
-
-#### Login Screen
-
-![iOS Login](screenshots/ios1.png)
-
-#### Signup Screen
-
-![iOS Signup](screenshots/ios2.png)
-
-#### Home Screen
-
-![iOS Home](screenshots/ios3.png)
+| Android | iOS |
+|---------|-----|
+| <img src="screenshots/android3.png" width="300"> | <img src="screenshots/ios3.png" width="300"> |
 
 ## Setup Instructions
 
 1.  Install dependencies
 
-```{=html}
-<!-- -->
 ```
     npm install
 
 2.  Start the project
 
-```{=html}
-<!-- -->
 ```
     npm start
 
